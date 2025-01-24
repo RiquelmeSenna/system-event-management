@@ -1,0 +1,83 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int                @id @default(autoincrement())
+  email            String             @unique
+  name             String
+  password         String
+  document         String
+  role             Role               @default(PARTICIPANT)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  Event            Event[]
+  ParticipantEvent ParticipantEvent[]
+}
+
+model Event {
+  id               Int                @id @default(autoincrement())
+  name             String
+  description      String
+  location         String
+  date             DateTime
+  time             DateTime
+  maxCapacity      Int
+  organizerId      Int
+  organizer        User               @relation(fields: [organizerId], references: [id])
+  categoryId       Int
+  category         Category           @relation(fields: [categoryId], references: [id])
+  participants     Int
+  revenue          Int
+  active           Boolean
+  tickets          Ticket[]
+  ParticipantEvent ParticipantEvent[]
+}
+
+model Category {
+  id    Int     @id @default(autoincrement())
+  name  String
+  Event Event[]
+}
+
+model Ticket {
+  id            Int        @id @default(autoincrement())
+  type          TicketType
+  price         Int
+  totalQuantity Int
+  available     Int
+  eventId       Int
+  event         Event      @relation(fields: [eventId], references: [id])
+}
+
+model ParticipantEvent {
+  id            Int      @id @default(autoincrement())
+  eventId       Int
+  event         Event    @relation(fields: [eventId], references: [id])
+  participantId Int
+  participant   User     @relation(fields: [participantId], references: [id])
+  ticketType    String
+  paymentStatus Boolean
+  createdAt     DateTime @default(now())
+}
+
+enum TicketType {
+  FREE
+  PAID
+}
+
+enum Role {
+  ORGANIZER
+  PARTICIPANT
+}

@@ -1,0 +1,82 @@
+Banco de dados : 
+ Eventos : 
+    - nome : string
+    - descrição : string
+    - local : string,
+    - data : date
+    - hora : time
+    - capacidade maxima : number
+    - criador do Evento(organizador) : ref -> organizador
+    - participante : ref -> participante***
+    - category : ref -> categorias
+    - participantes(cliente) : number
+    - faturamento : number 
+    - active : boolean
+    [] tipos de ingresso
+
+ Tipo de ingresso : 
+    - tipo : enum(gratuito, pago)
+    - price : number
+    - qntd total : number
+    - qntd disponivel : number
+    - event : ref -> event
+
+ Categorias : 
+  - name : string
+  [] eventos
+
+  Usuario : 
+    - name : string
+    - email : string : unique
+    - documento : string
+    - role : enum(organizador, participante)
+    - password : string
+    - timestamps : createdAt
+    [] events
+
+  participante_evento :
+    - eventoId : ref -> Evento
+    - usuarioid : ref -> usuarioid
+    - tipo_ingresso : string
+    - status_pagamento : boolean
+    - createdAt : date
+
+
+   Rotas : 
+
+   GET : / = Pagina inicial mostrando os eventos 
+   POST : /register = Registro do usuario
+   POST : /login = tela de login
+
+   GET : /categories = rota pra selecionar as categorias
+   GET : /categories/:id/ = pegar os eventos de uma categoria especifica
+   POST : /categories = Adicionar uma categoria
+   PUT : /categories/:id = Modificar uma categoria 
+   DELETE : /categories/:id = deletar uma categoria
+   
+   GET : /events?filtros = Listar eventos com os filtros
+   GET : /events/:id = Pegar o evento em especifico
+   GET : /events/location/:local = Listar eventos por local especifico
+   POST : /events = Adicionar um evento
+   PUT : /events/:id = Modificar o evento
+   DELETE : /events/:id = Deletar um evento
+   GET : /search/eventos?name = procurar eventos por nome
+
+   GET : /user/me = acessar seu usuario
+   PUT : /user/me = modificar informações do usuario
+   DELETE : /user/me = deletar o usuario
+   GET : /user/me/tickets : vê os ingressos em geral do usuario, separando por ativo e encerrado
+
+   POST : /cart = Adicionar itens ao carrinho
+   GET : /cart = listar os itens no carrinho
+   POST : /cart/checkout = finalizar a compra
+   POST : /event/:id/tickets = local para efetuar a compra ao efetuar vai para o ingresso do usuario
+
+   GET: /organizador/me/reports : Relatorios de seus eventos criado
+   
+
+
+
+
+   
+
