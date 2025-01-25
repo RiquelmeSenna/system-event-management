@@ -1,7 +1,7 @@
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
-import { router } from './routers/mainRouter';
+import { EventRouter } from './routers/eventsRouter';
 
 const server = express();
 
@@ -14,7 +14,7 @@ server.use(cors());
 
 const port = process.env.PORT || 3000;
 
-server.use('/', router);
+server.use('/events', EventRouter);
 
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);
