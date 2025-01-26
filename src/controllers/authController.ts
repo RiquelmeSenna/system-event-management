@@ -5,7 +5,7 @@ import * as authService from '../services/auth'
 export const signUp: RequestHandler = async (req, res) => {
     const safeData = authSchema.registerSchema.safeParse(req.body)
     if (!safeData.success) {
-        return res.json({ error: safeData.error.flatten().fieldErrors })
+        return res.status(400).json({ error: safeData.error.flatten().fieldErrors })
     }
 
     try {
@@ -17,7 +17,7 @@ export const signUp: RequestHandler = async (req, res) => {
             role: safeData.data.role,
         })
 
-        res.json({
+        res.status(201).json({
             token: newUser.token,
             User: {
                 name: newUser.name,
@@ -26,14 +26,14 @@ export const signUp: RequestHandler = async (req, res) => {
         })
     } catch (error) {
         console.log(error)
-        res.json({ error: 'Usuario já existente' })
+        res.status(401).json({ error: 'Usuario já existente' })
     }
 }
 
 export const signIn: RequestHandler = async (req, res) => {
     const safeData = authSchema.loginSchema.safeParse(req.body)
     if (!safeData.success) {
-        return res.json({ error: safeData.error.flatten().fieldErrors })
+        return res.status(400).json({ error: safeData.error.flatten().fieldErrors })
     }
 
     try {
@@ -47,7 +47,7 @@ export const signIn: RequestHandler = async (req, res) => {
         })
     } catch (error) {
         console.log(error)
-        res.json({ error: 'Usuario/senha incorreto' })
+        res.status(401).json({ error: 'Usuario/senha incorreto' })
     }
 
 }

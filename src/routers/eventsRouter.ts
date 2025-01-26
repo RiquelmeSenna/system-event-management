@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as eventsController from '../controllers/eventsController';
+import { authMiddleware } from "../middlewares/authJwt";
 
 export const EventRouter = Router();
 
