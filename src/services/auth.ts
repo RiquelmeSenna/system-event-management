@@ -6,7 +6,6 @@ import { getUserByEmail } from '../models/user';
 
 export const register = async (data: User) => {
     const hasUser = await getUserByEmail(data.email)
-
     if (hasUser) {
         throw new Error('User existing')
     }
@@ -14,7 +13,11 @@ export const register = async (data: User) => {
     const passwordHash = await bcrypt.hash(data.password, 10);
     const token = await jwtSing(data.email);
 
-    userModel.register({ ...data, password: passwordHash, });
+    const newUser = await userModel.register({ ...data, password: passwordHash, });
+
+    if (newUser == false) {
+        throw new Error('Cannot possible create user')
+    }
 
     return {
         token,

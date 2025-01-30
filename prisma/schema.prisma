@@ -32,15 +32,14 @@ model Event {
   description      String
   location         String
   date             DateTime
-  time             DateTime
   maxCapacity      Int
   organizerId      Int
   organizer        User               @relation(fields: [organizerId], references: [id])
   categoryId       Int
   category         Category           @relation(fields: [categoryId], references: [id])
-  participants     Int
-  revenue          Int
-  active           Boolean
+  participants     Int                @default(0)
+  revenue          Int                @default(0)
+  active           Boolean            @default(true)
   tickets          Ticket[]
   ParticipantEvent ParticipantEvent[]
 }

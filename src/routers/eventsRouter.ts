@@ -7,8 +7,8 @@ export const EventRouter = Router();
 EventRouter.get('/', eventsController.getEvents);
 EventRouter.get('/:id', eventsController.getEvent);
 EventRouter.get('/location/:local', eventsController.getEventsByLocation);
-EventRouter.post('/', eventsController.createEvent);
-EventRouter.put('/:id', eventsController.updateEvent);
-EventRouter.delete('/:id', eventsController.deleteEvent);
 EventRouter.get('/search/:name', eventsController.searchEvents);
+EventRouter.post('/', authMiddleware, eventsController.createEvent);
+EventRouter.put('/:id', authMiddleware, eventsController.updateEvent);
+EventRouter.delete('/:id', authMiddleware, eventsController.deleteEvent);
 

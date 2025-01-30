@@ -8,7 +8,7 @@ export const jwtSing = (email: string) => {
 }
 
 export const authMiddleware = async (req: ExtendRequest, res: Response, next: NextFunction) => {
-    const header = req.headers.get('authorization')
+    const header = req.headers['authorization']
     if (!header) {
         return res.json({ error: 'Mande um header de autorização' })
     }

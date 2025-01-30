@@ -1,16 +1,14 @@
 import { Event } from '@prisma/client'
 import * as modelEvent from '../models/events'
 import { getUserByEmail } from '../models/user'
-import { UpdateEvent } from '../types/eventType'
+import { CreateEvent, UpdateEvent } from '../types/eventType'
 
 export const getEvents = async (skip: number) => {
     const events = await modelEvent.getEvents(skip)
 
-    if (events === null || events === undefined) {
+    if (!events || events.length === 0) {
         throw new Error("Don't have more Events")
     }
-
-
 
     return events
 }
@@ -49,13 +47,14 @@ export const getEventByName = async (name: string) => {
     }
 }
 
-export const addEvent = async (data: Event, email: string) => {
-    const newEvent = await modelEvent.addEvent(data)
+export const addEvent = async (data: CreateEvent, email: string) => {
     const organizer = await getUserByEmail(email)
 
     if (organizer?.role != 'ORGANIZER') {
         throw new Error('Not possible create the event')
     }
+
+    const newEvent = await modelEvent.addEvent(data, organizer.id as number)
 
     return newEvent
 }

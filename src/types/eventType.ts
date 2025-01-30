@@ -7,3 +7,12 @@ export type UpdateEvent = {
     maxCapacity?: number,
     active?: boolean
 }
+
+export type CreateEvent = {
+    name: string,
+    description: string,
+    location: string,
+    date: Date,
+    maxCapacity: number,
+    categoryId: number,
+}

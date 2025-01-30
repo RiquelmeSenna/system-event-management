@@ -1,17 +1,26 @@
 import { Event } from "@prisma/client"
 import { prisma } from "../database/prismaConnection"
-import { UpdateEvent } from "../types/eventType"
+import { CreateEvent, UpdateEvent } from "../types/eventType"
 
 export const getEvents = async (skip: number) => {
     const events = await prisma.event.findMany({
         where: {
-            active: true
+            active: true,
         },
         orderBy: {
             revenue: 'asc'
         },
-        skip: skip * 8,
-        take: 8
+
+        skip: skip ? (skip - 1) * 8 : 0,
+        take: 8,
+        select: {
+            name: true,
+            description: true,
+            maxCapacity: true,
+            location: true,
+            date: true,
+            category: { select: { name: true } }
+        }
     })
 
     return events
@@ -50,9 +59,12 @@ export const getEventByName = async (name: string) => {
     })
 }
 
-export const addEvent = async (data: Event) => {
+export const addEvent = async (data: CreateEvent, organizerId: number) => {
     const newEvent = await prisma.event.create({
-        data
+        data: {
+            ...data,
+            organizerId
+        }
     })
 
     return newEvent

@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Event" ALTER COLUMN "participants" SET DEFAULT 0,
+ALTER COLUMN "revenue" SET DEFAULT 0,
+ALTER COLUMN "active" SET DEFAULT true;
