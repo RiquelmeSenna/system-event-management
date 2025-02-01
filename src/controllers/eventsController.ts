@@ -134,7 +134,7 @@ export const deleteEvent = async (req: ExtendRequest, res: Response) => {
     try {
         const deletedEvent = await eventService.deleteEvent(parseInt(safeData.data.id), req.userEmail)
 
-        res.status(200).json({ deletedEvent: true })
+        res.status(200).json({ deletedEvent })
     } catch (error) {
         console.log(error)
         res.status(400).json({ error: 'Não foi possivel deletar' })

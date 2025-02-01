@@ -1,4 +1,3 @@
-import { Event } from '@prisma/client'
 import * as modelEvent from '../models/events'
 import { getUserByEmail } from '../models/user'
 import { CreateEvent, UpdateEvent } from '../types/eventType'
