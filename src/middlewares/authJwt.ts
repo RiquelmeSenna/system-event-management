@@ -18,12 +18,11 @@ export const authMiddleware = async (req: ExtendRequest, res: Response, next: Ne
         async (error: any, decoded: any) => {
             if (error) return res.status(401).json({ error: 'Mande um token válido' })
             try {
-                const email = decoded.email
+                const email = decoded
                 const user = await getUserByEmail(email)
                 if (!user) {
                     return res.json({ error: 'Usuario não encontrado' })
                 }
-
                 req.userEmail = user.email
                 next()
             } catch (error) {

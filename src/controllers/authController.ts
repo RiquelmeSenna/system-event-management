@@ -1,6 +1,8 @@
-import { RequestHandler } from "express";
+import { RequestHandler, Response } from "express";
 import * as authSchema from '../validations/auth'
 import * as authService from '../services/auth'
+import { ExtendRequest } from "../types/extented-request";
+import { getUserByEmail } from "../models/user";
 
 export const signUp: RequestHandler = async (req, res) => {
     const safeData = authSchema.registerSchema.safeParse(req.body)

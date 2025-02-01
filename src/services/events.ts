@@ -13,17 +13,10 @@ export const getEvents = async (skip: number) => {
     return events
 }
 
-export const getEvent = async (id: number, email: string) => {
+export const getEvent = async (id: number) => {
     const event = await modelEvent.getEvent(id)
-    const organizer = await getUserByEmail(email)
-
-
     if (!event) {
         throw new Error("Event not exist")
-    }
-
-    if (event.active == false && organizer?.id != event.organizerId) {
-        throw new Error("Event is not available")
     }
 
     return event
@@ -39,12 +32,14 @@ export const getEventLocal = async (local: string, skip: number) => {
     return event
 }
 
-export const getEventByName = async (name: string) => {
-    const events = await modelEvent.getEventByName(name)
+export const getEventByName = async (name: string, skip: number) => {
+    const events = await modelEvent.getEventsByName(name, skip)
 
     if (events == null || events == undefined) {
         throw new Error("There is no event with this name")
     }
+
+    return events
 }
 
 export const addEvent = async (data: CreateEvent, email: string) => {
@@ -60,29 +55,43 @@ export const addEvent = async (data: CreateEvent, email: string) => {
 }
 
 export const updateEvent = async (data: UpdateEvent, id: number, email: string) => {
-    const updatedEvent = await modelEvent.updateEvent(data, id)
+    const event = await modelEvent.getEvent(id)
     const organizer = await getUserByEmail(email)
 
-    if (organizer?.id != updatedEvent.organizerId) {
-        throw new Error('Not possible create the event')
+    if (!event) {
+        throw new Error('The event not exist')
+    }
+
+    if (organizer?.id != event.organizerId) {
+        throw new Error('Only the organizer can update this event')
     }
 
     if (organizer?.role != 'ORGANIZER') {
-        throw new Error('Not possible create the event')
+        throw new Error('Cannot update event')
     }
+
+    const updatedEvent = await modelEvent.updateEvent(data, id)
+
+    return updatedEvent
 }
 
 export const deleteEvent = async (id: number, email: string) => {
-    const deletedEvent = await modelEvent.deleteEvent(id)
+    const event = await modelEvent.getEvent(id)
     const organizer = await getUserByEmail(email)
 
-    if (organizer?.id != deletedEvent.organizerId) {
+    if (!event) {
+        throw new Error('The event not exist')
+    }
+
+    if (organizer?.id != event.organizerId) {
         throw new Error('Only the organizer can delete this event')
     }
 
-    if (deletedEvent.active == true) {
+    if (event.active === true) {
         throw new Error('Disable the event before deleting')
     }
+
+    const deletedEvent = await modelEvent.deleteEvent(id)
 
     return deletedEvent
 }

@@ -1,4 +1,4 @@
-import { RequestHandler, Response } from "express";
+import e, { RequestHandler, Response } from "express";
 import * as eventService from '../services/events'
 import * as eventValidation from '../validations/events'
 import { ExtendRequest } from "../types/extented-request";
@@ -16,9 +16,62 @@ export const getEvents: RequestHandler = async (req, res) => {
     }
 }
 
-export const getEvent: RequestHandler = (req, res) => { }
+export const getEvent: RequestHandler = async (req, res) => {
+    const safeData = eventValidation.getOneEventSchema.safeParse(req.params)
 
-export const getEventsByLocation: RequestHandler = (req, res) => { }
+    if (!safeData.success) {
+        return res.status(400).json({ error: safeData.error.flatten().fieldErrors })
+    }
+    try {
+        const event = await eventService.getEvent(parseInt(safeData.data.id))
+
+        res.json({
+            event: {
+                name: event.name,
+                description: event.description,
+                location: event.location,
+                date: event.date,
+                maxCapcity: event.maxCapacity,
+                category: event.category.name
+            }
+        })
+    } catch (error) {
+        res.status(400).json({ error: 'Aconteceu algum error' })
+    }
+}
+
+export const getEventsByLocation: RequestHandler = async (req, res) => {
+    const safeData = eventValidation.getEventByLocalSchema.safeParse(req.params)
+    const { skip } = req.query
+
+    if (!safeData.success) {
+        return res.status(400).json({ error: safeData.error.flatten().fieldErrors })
+    }
+
+    try {
+        const events = await eventService.getEventLocal(safeData.data.local, parseInt(skip as string))
+
+        res.json({ events })
+    } catch (error) {
+        res.status(401).json({ error: 'Ocorreu algum error' })
+    }
+}
+export const searchEvents: RequestHandler = async (req, res) => {
+    const safeData = eventValidation.getEventsByName.safeParse(req.params)
+    const { skip } = req.query
+
+    if (!safeData.success) {
+        return res.status(400).json({ error: safeData.error.flatten().fieldErrors })
+    }
+
+    try {
+        const events = await eventService.getEventByName(safeData.data.name, parseInt(skip as string))
+
+        res.json({ events })
+    } catch (error) {
+
+    }
+}
 
 export const createEvent = async (req: ExtendRequest, res: Response) => {
     const safeData = eventValidation.eventCreateSchema.safeParse(req.body)
@@ -43,8 +96,48 @@ export const createEvent = async (req: ExtendRequest, res: Response) => {
     }
 }
 
-export const updateEvent: RequestHandler = (req, res) => { }
+export const updateEvent = async (req: ExtendRequest, res: Response) => {
+    const safeData = eventValidation.getOneEventSchema.safeParse(req.params)
+    const safeDataBody = eventValidation.eventUpdateSchema.safeParse(req.body)
+    if (!safeData.success) {
+        return res.status(400).json({ error: safeData.error.flatten().fieldErrors })
+    }
+    if (!safeDataBody.success) {
+        return res.status(400).json({ error: safeDataBody.error.flatten().fieldErrors })
+    }
 
-export const deleteEvent: RequestHandler = (req, res) => { }
+    try {
+        const updatedEvent = await eventService.updateEvent({
+            active: safeDataBody.data.active,
+            categoryId: safeDataBody.data.categoryId,
+            date: safeDataBody.data.date ? new Date(safeDataBody.data.date) : undefined,
+            description: safeDataBody.data.description,
+            location: safeDataBody.data.location,
+            maxCapacity: safeDataBody.data.maxCapacity,
+            name: safeDataBody.data.name
+        }, parseInt(safeData.data.id), req.userEmail)
 
-export const searchEvents: RequestHandler = (req, res) => { }
+        res.status(206).json({ updatedEvent })
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({ error: 'Não foi possivel atualizar' })
+    }
+}
+
+export const deleteEvent = async (req: ExtendRequest, res: Response) => {
+    const safeData = eventValidation.getOneEventSchema.safeParse(req.params)
+
+    if (!safeData.success) {
+        return res.status(400).json({ error: safeData.error.flatten().fieldErrors })
+    }
+
+    try {
+        const deletedEvent = await eventService.deleteEvent(parseInt(safeData.data.id), req.userEmail)
+
+        res.status(200).json({ deletedEvent: true })
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({ error: 'Não foi possivel deletar' })
+    }
+}
+

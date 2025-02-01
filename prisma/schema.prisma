@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -34,14 +28,14 @@ model Event {
   date             DateTime
   maxCapacity      Int
   organizerId      Int
-  organizer        User               @relation(fields: [organizerId], references: [id])
   categoryId       Int
-  category         Category           @relation(fields: [categoryId], references: [id])
   participants     Int                @default(0)
   revenue          Int                @default(0)
   active           Boolean            @default(true)
-  tickets          Ticket[]
+  category         Category           @relation(fields: [categoryId], references: [id])
+  organizer        User               @relation(fields: [organizerId], references: [id])
   ParticipantEvent ParticipantEvent[]
+  tickets          Ticket[]
 }
 
 model Category {
@@ -63,12 +57,12 @@ model Ticket {
 model ParticipantEvent {
   id            Int      @id @default(autoincrement())
   eventId       Int
-  event         Event    @relation(fields: [eventId], references: [id])
   participantId Int
-  participant   User     @relation(fields: [participantId], references: [id])
   ticketType    String
   paymentStatus Boolean
   createdAt     DateTime @default(now())
+  event         Event    @relation(fields: [eventId], references: [id])
+  participant   User     @relation(fields: [participantId], references: [id])
 }
 
 enum TicketType {

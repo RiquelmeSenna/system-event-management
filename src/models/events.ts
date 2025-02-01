@@ -29,7 +29,21 @@ export const getEvents = async (skip: number) => {
 
 export const getEvent = async (id: number) => {
     const event = await prisma.event.findFirst({
-        where: { id }
+        where: { id },
+        select: {
+            name: true,
+            description: true,
+            location: true,
+            date: true,
+            maxCapacity: true,
+            active: true,
+            organizerId: true,
+            category: {
+                select: { name: true }
+            }
+        }
+
+
     })
 
     return event
@@ -39,24 +53,52 @@ export const getEvent = async (id: number) => {
 export const getEventLocal = async (local: string, skip: number) => {
     const events = await prisma.event.findMany({
         where: {
-            location: local
+            location: {
+                contains: local,
+                mode: 'insensitive'
+            }
         },
-        skip: skip * 8,
+        select: {
+            name: true,
+            description: true,
+            location: true,
+            date: true,
+            maxCapacity: true,
+            category: {
+                select: { name: true }
+            }
+        },
+        skip: skip ? (skip - 1) * 8 : 0,
         take: 8
     })
 
     return events
 }
 
-export const getEventByName = async (name: string) => {
+export const getEventsByName = async (name: string, skip: number) => {
     const event = await prisma.event.findMany({
         where: {
             name: {
                 contains: name,
                 mode: 'insensitive'
+            },
+        },
+        select: {
+            name: true,
+            description: true,
+            location: true,
+            date: true,
+            maxCapacity: true,
+            category: {
+                select: { name: true }
             }
-        }
+        },
+
+        skip: skip ? (skip - 1) * 8 : 0,
+        take: 8
     })
+
+    return event
 }
 
 export const addEvent = async (data: CreateEvent, organizerId: number) => {

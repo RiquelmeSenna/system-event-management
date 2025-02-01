@@ -57,7 +57,7 @@ Banco de dados :
    GET : /events?filtros = Listar eventos com os filtros
    GET : /events/:id = Pegar o evento em especifico
    GET : /events/location/:local = Listar eventos por local especifico
-   GET : /search/eventos?name = procurar eventos por nome
+   GET : /events/search/:name = procurar eventos por nome
    POST : /events = Adicionar um evento
    PUT : /events/:id = Modificar o evento
    DELETE : /events/:id = Deletar um evento

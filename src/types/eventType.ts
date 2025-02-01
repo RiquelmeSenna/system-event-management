@@ -3,9 +3,9 @@ export type UpdateEvent = {
     description?: string,
     location?: string,
     date?: Date,
-    time: Date,
     maxCapacity?: number,
-    active?: boolean
+    active?: boolean,
+    categoryId?: number
 }
 
 export type CreateEvent = {
