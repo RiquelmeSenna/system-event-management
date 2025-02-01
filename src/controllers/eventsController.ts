@@ -53,7 +53,7 @@ export const getEventsByLocation: RequestHandler = async (req, res) => {
 
         res.json({ events })
     } catch (error) {
-        res.status(401).json({ error: 'Ocorreu algum error' })
+        res.status(400).json({ error: 'Não há eventos neste local :(' })
     }
 }
 export const searchEvents: RequestHandler = async (req, res) => {
@@ -69,7 +69,7 @@ export const searchEvents: RequestHandler = async (req, res) => {
 
         res.json({ events })
     } catch (error) {
-
+        res.status(400).json({ error: 'Não há eventos com este nome' })
     }
 }
 

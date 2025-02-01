@@ -6,7 +6,7 @@ export const getEvents = async (skip: number) => {
     const events = await modelEvent.getEvents(skip)
 
     if (!events || events.length === 0) {
-        throw new Error("Don't have more Events")
+        throw new Error("Don't has more Events")
     }
 
     return events
@@ -24,7 +24,7 @@ export const getEvent = async (id: number) => {
 export const getEventLocal = async (local: string, skip: number) => {
     const event = await modelEvent.getEventLocal(local, skip)
 
-    if (event == null || event == undefined) {
+    if (event.length < 1) {
         throw new Error("There is no event at this location")
     }
 
@@ -34,7 +34,7 @@ export const getEventLocal = async (local: string, skip: number) => {
 export const getEventByName = async (name: string, skip: number) => {
     const events = await modelEvent.getEventsByName(name, skip)
 
-    if (events == null || events == undefined) {
+    if (events.length < 1) {
         throw new Error("There is no event with this name")
     }
 
