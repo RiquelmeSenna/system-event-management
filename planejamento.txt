@@ -49,7 +49,8 @@ Banco de dados :
    POST : /login = tela de login
 
    GET : /categories = rota pra selecionar as categorias
-   GET : /categories/:id/ = pegar os eventos de uma categoria especifica
+   GET : /categories/:id = pegar os eventos de uma categoria especifica
+   GET : /categories/:name
    POST : /categories = Adicionar uma categoria
    PUT : /categories/:id = Modificar uma categoria 
    DELETE : /categories/:id = deletar uma categoria
