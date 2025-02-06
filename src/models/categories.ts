@@ -3,8 +3,18 @@ import { prisma } from "../database/prismaConnection"
 
 export const getCategories = async () => {
     const categories = await prisma.category.findMany({
-        include: {
-            Event: true
+        select: {
+            name: true,
+            Event: {
+                select: {
+                    name: true,
+                    description: true,
+                    location: true,
+                    date: true,
+                    maxCapacity: true,
+
+                }
+            }
         }
     })
 
@@ -16,8 +26,18 @@ export const getCategory = async (id: number) => {
         where: {
             id
         },
-        include: {
-            Event: true
+        select: {
+            name: true,
+            Event: {
+                select: {
+                    name: true,
+                    description: true,
+                    location: true,
+                    date: true,
+                    maxCapacity: true,
+
+                }
+            }
         }
     })
 
@@ -26,7 +46,22 @@ export const getCategory = async (id: number) => {
 
 export const getCategoryByname = async (name: string) => {
     const categories = await prisma.category.findMany({
-        where: { name: { contains: name, mode: 'insensitive' } }
+        where: {
+            name: { contains: name, mode: 'insensitive' }
+        },
+        select: {
+            name: true,
+            Event: {
+                select: {
+                    name: true,
+                    description: true,
+                    location: true,
+                    date: true,
+                    maxCapacity: true,
+
+                }
+            }
+        }
     })
 
     return categories

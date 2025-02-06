@@ -34,11 +34,11 @@ export const getCategoryByname = async (name: string) => {
 
 export const newcategory = async (email: string, name: string,) => {
     const user = await getUserByEmail(email)
-    const newcategory = await categoriesModel.addCategory(name)
 
     if (user?.role != 'ADMIN') {
         throw new Error('User cannot create Category')
     }
+    const newcategory = await categoriesModel.addCategory(name)
 
     if (!newcategory) {
         throw new Error('Not possible create category')
@@ -49,11 +49,11 @@ export const newcategory = async (email: string, name: string,) => {
 
 export const updateCategory = async (email: string, id: number, name: string) => {
     const user = await getUserByEmail(email)
-    const updatedCategory = await categoriesModel.updateCategory(id, name)
 
     if (user?.role != 'ADMIN') {
         throw new Error('User cannot create Category')
     }
+    const updatedCategory = await categoriesModel.updateCategory(id, name)
 
     if (!updatedCategory) {
         throw new Error('Not found category')
@@ -65,11 +65,11 @@ export const updateCategory = async (email: string, id: number, name: string) =>
 
 export const deletecategory = async (email: string, id: number) => {
     const user = await getUserByEmail(email)
-    const deletedCategory = await categoriesModel.deletecategory(id)
 
     if (user?.role != 'ADMIN') {
         throw new Error('User cannot create Category')
     }
+    const deletedCategory = await categoriesModel.deletecategory(id)
 
     if (!deletedCategory) {
         throw new Error('Not found category')
