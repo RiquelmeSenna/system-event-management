@@ -73,4 +73,5 @@ enum TicketType {
 enum Role {
   ORGANIZER
   PARTICIPANT
+  ADMIN
 }

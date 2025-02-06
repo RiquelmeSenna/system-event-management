@@ -28,6 +28,8 @@ export const getCategoryByname = async (name: string) => {
     const categories = await prisma.category.findMany({
         where: { name: { contains: name, mode: 'insensitive' } }
     })
+
+    return categories
 }
 
 export const addCategory = async (name: string) => {
