@@ -25,6 +25,7 @@ export const getCategory: RequestHandler = async (req, res) => {
 
         res.json({ category })
     } catch (error) {
+        console.log(error)
         res.status(400).json({ error: 'Nao foi possivel encontrar a categoria' })
     }
 }

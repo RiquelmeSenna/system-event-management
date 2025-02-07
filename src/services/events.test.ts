@@ -10,7 +10,7 @@ describe('Should test all services from events', () => {
         date: new Date('2025-10-01'),
         location: 'New York/NY',
         maxCapacity: 500,
-        categoryId: 2,
+        categoryId: 9,
         active: true,
         id: 1,
         organizerId: 8,
@@ -109,13 +109,13 @@ describe('Should test all services from events', () => {
 
     test("Shouldn't delete event because user is wrong", () => {
         expect(async () => {
-            await serviceEvent.deleteEvent(28, 'riquelmesenna577@gmail.com')
+            await serviceEvent.deleteEvent(32, 'riquelmesenna577@gmail.com')
         }).rejects.toThrow('Only the organizer can delete this event')
     })
 
     test("Shouldn't delete event because it still active", () => {
         expect(async () => {
-            await serviceEvent.deleteEvent(29, 'riquelmestayler@gmail.com')
+            await serviceEvent.deleteEvent(32, 'qgda30@gmail.com')
         }).rejects.toThrow('Disable the event before deleting')
     })
 })
