@@ -80,13 +80,20 @@ export const createEvent = async (req: ExtendRequest, res: Response) => {
     }
 
     try {
+        if (!req.file) {
+            return res.json({ error: 'Mande o arquivo de foto' })
+        }
+
+        const filename = await eventService.handleRawPhoto(req.file.path)
+
         const newEvent = await eventService.addEvent({
             name: safeData.data.name,
             description: safeData.data.description,
             location: safeData.data.location,
             date: new Date(safeData.data.date),
-            maxCapacity: safeData.data.maxCapacity,
-            categoryId: safeData.data.categoryId,
+            maxCapacity: parseInt(safeData.data.maxCapacity),
+            categoryId: parseInt(safeData.data.categoryId),
+            Image: filename
         }, req.userEmail)
 
         res.status(201).json({ newEvent })

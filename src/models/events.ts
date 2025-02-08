@@ -1,6 +1,6 @@
-import { Event } from "@prisma/client"
 import { prisma } from "../database/prismaConnection"
 import { CreateEvent, UpdateEvent } from "../types/eventType"
+
 
 export const getEvents = async (skip: number) => {
     const events = await prisma.event.findMany({

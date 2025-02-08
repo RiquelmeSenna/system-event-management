@@ -1,6 +1,9 @@
+import { v4 } from 'uuid'
 import * as modelEvent from '../models/events'
 import { getUserByEmail } from '../models/user'
 import { CreateEvent, UpdateEvent } from '../types/eventType'
+import sharp from 'sharp'
+import fs from 'fs/promises'
 
 export const getEvents = async (skip: number) => {
     const events = await modelEvent.getEvents(skip)
@@ -40,6 +43,27 @@ export const getEventByName = async (name: string, skip: number) => {
 
     return events
 }
+
+export const handleRawPhoto = async (tmpPath: string) => {
+    const newNameFile = v4() + '.jpg'
+
+    const image = await sharp(tmpPath)
+        .resize(400, 400, { fit: 'cover' })
+        .toBuffer()
+
+    await sharp(tmpPath)
+        .toFile('./public/images/' + newNameFile)
+
+    try {
+        await fs.unlink(tmpPath);
+    } catch (error: any) {
+        console.error(`Erro ao apagar o arquivo temporário: ${error.message}`);
+    }
+
+    return newNameFile
+
+}
+
 
 export const addEvent = async (data: CreateEvent, email: string) => {
     const organizer = await getUserByEmail(email)
