@@ -6,5 +6,10 @@ export type User = {
     email: string,
     role?: Role
     document: string,
+}
 
+export type UserUpdate = {
+    name?: string,
+    password?: string,
+    newEmail?: string
 }

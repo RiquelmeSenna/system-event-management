@@ -21,7 +21,7 @@ export const authMiddleware = async (req: ExtendRequest, res: Response, next: Ne
                 const email = decoded
                 const user = await getUserByEmail(email)
                 if (!user) {
-                    return res.json({ error: 'Usuario não encontrado' })
+                    return res.status(400).json({ error: 'Usuario não encontrado' })
                 }
                 req.userEmail = user.email
                 next()
