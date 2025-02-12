@@ -1,12 +1,27 @@
-import { describe, test, expect } from "@jest/globals";
+import { describe, test, expect, beforeAll, afterAll } from "@jest/globals";
 import * as serviceCategories from './categories'
-import { Category } from "@prisma/client";
+import { User } from "../types/authType";
+import { register } from "./auth";
+import { deleteUser } from "./user";
+
 
 describe('Should test all services from categories', () => {
     let categoryId: number
 
+    let adminUser: User = {
+        document: '06955734113',
+        email: 'riquelmeadmin@gmail.com',
+        name: 'Riquelme Admin',
+        password: '123456789!',
+        role: 'ADMIN'
+    }
+
+    beforeAll(async () => {
+        await register(adminUser)
+    })
+
     test('Should create a new category', async () => {
-        const category = await serviceCategories.newcategory('riquelmeadmin@gmail.com', 'Rap')
+        const category = await serviceCategories.newcategory(adminUser.email, 'Rap')
 
         expect(category.name).toBe('Rap')
         categoryId = category.id
@@ -31,13 +46,13 @@ describe('Should test all services from categories', () => {
     })
 
     test('should update category by id', async () => {
-        const updatedCategory = await serviceCategories.updateCategory('riquelmeadmin@gmail.com', categoryId, 'New Rap')
+        const updatedCategory = await serviceCategories.updateCategory(adminUser.email, categoryId, 'New Rap')
 
         expect(updatedCategory.name).toBe('New Rap')
     })
 
     test('Should delete category by id', async () => {
-        const deletedCategory = await serviceCategories.deletecategory('riquelmeadmin@gmail.com', categoryId)
+        const deletedCategory = await serviceCategories.deletecategory(adminUser.email, categoryId)
 
         expect(deletedCategory).toBeDefined()
         expect(deletedCategory).toHaveProperty('id')
@@ -69,20 +84,24 @@ describe('Should test all services from categories', () => {
 
     test("Shouldn't update category because it not exist", () => {
         expect(async () => {
-            await serviceCategories.updateCategory('riquelmeadmin@gmail.com', 1, 'Rap')
+            await serviceCategories.updateCategory(adminUser.email, 1000, 'Rap')
         }).rejects.toThrow('Not found category')
     })
 
     test("Shouldn't delete category because user is not admin", () => {
         expect(async () => {
-            await serviceCategories.deletecategory('riquelmesenna577@gmail.com', 3)
+            await serviceCategories.deletecategory('riquelmesenna577@gmail.com', categoryId)
         }).rejects.toThrow('User cannot delete Category')
     })
 
     test("Shouldn't delete category because it not exist", () => {
         expect(async () => {
-            await serviceCategories.deletecategory('riquelmeadmin@gmail.com', 1)
+            await serviceCategories.deletecategory('riquelmeadmin@gmail.com', 1000)
         }).rejects.toThrow('Not found category')
+    })
+
+    afterAll(async () => {
+        await deleteUser(adminUser.email)
     })
 
 })

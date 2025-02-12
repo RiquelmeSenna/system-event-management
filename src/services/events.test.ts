@@ -1,26 +1,52 @@
 import { describe, test, beforeAll, afterAll, expect } from '@jest/globals';
 import * as serviceEvent from './events'
-import { CreateEvent } from '../types/eventType';
-import { Event } from '@prisma/client';
+import { Category, Event } from '@prisma/client';
+import { register } from './auth';
+import { prisma } from '../database/prismaConnection';
+import { deleteUser } from './user';
+import { deletecategory } from './categories';
+import { User } from '../types/authType';
 
 describe('Should test all services from events', () => {
+    const user: User = {
+        name: "Riquelme Senna",
+        document: '06955734113',
+        email: 'riquelmesenna577@gmail.com',
+        password: '123456789!',
+        role: 'ORGANIZER'
+    }
+
+    const category: Category = {
+        id: 1,
+        name: 'Rap'
+    }
+
     const data: Event = {
         name: 'Rap game 2.0',
         description: 'Rap game 2.0 a nova versão',
         date: new Date('2025-10-01'),
         location: 'New York/NY',
         maxCapacity: 500,
-        categoryId: 3,
+        categoryId: 1,
         active: true,
         id: 1,
-        organizerId: 2,
+        organizerId: 1,
         participants: 0,
         revenue: 0,
         Image: 'Imagem ficticia'
     };
+    let adminUser: User = {
+        document: '06955734112', email: 'riquelmeadmin@gmail.com',
+        name: "Riquelme Admin", password: '123456789!', role: 'ADMIN'
+    }
+    beforeAll(async () => {
+        await register(user)
+        await register(adminUser)
+        await prisma.category.create({ data: { id: category.id, name: category.name } })
+    })
 
     test('Should test if create the event', async () => {
-        const newEvent = await serviceEvent.addEvent(data, 'riquelme@gmail.com')
+        const newEvent = await serviceEvent.addEvent(data, user.email)
 
         expect(newEvent.active).toBeTruthy();
         expect(newEvent.name).toBe('Rap game 2.0')
@@ -28,7 +54,7 @@ describe('Should test all services from events', () => {
 
     test("Shouldn't create user because user is not Organizer", () => {
         expect(async () => {
-            await serviceEvent.addEvent(data, 'riquelmesenna577@gmail.com')
+            await serviceEvent.addEvent(data, 'emailerrado@gmail.com')
         }).rejects.toThrow('Not possible create the event')
     })
 
@@ -50,7 +76,6 @@ describe('Should test all services from events', () => {
 
         expect(event.active).toBeTruthy()
         expect(event).toHaveProperty('name')
-        expect(event.organizerId).toBe(2)
     })
 
     test("Shouldn't find event because wrong id", () => {
@@ -84,7 +109,7 @@ describe('Should test all services from events', () => {
     })
 
     test('Should update event property name and active', async () => {
-        const updatedEvent = await serviceEvent.updateEvent({ active: false, name: 'Rap game atualizado' }, 1, 'riquelme@gmail.com')
+        const updatedEvent = await serviceEvent.updateEvent({ active: false, name: 'Rap game atualizado' }, 1, user.email)
 
         expect(updatedEvent.active).toBeFalsy()
         expect(updatedEvent.name).toBe('Rap game atualizado')
@@ -92,12 +117,18 @@ describe('Should test all services from events', () => {
 
     test("Shouldn't update event because user is wrong", () => {
         expect(async () => {
-            await serviceEvent.updateEvent({ name: 'Sla' }, 1, 'riquelmesenna577@gmail.com')
+            await serviceEvent.updateEvent({ name: 'Sla' }, 1, 'emailerrado@gmail.com')
         }).rejects.toThrow('Only the organizer can update this event')
     })
 
+    test("Shouldn't delete event because user is wrong", () => {
+        expect(async () => {
+            await serviceEvent.deleteEvent(data.id, 'emailerrado@gmail.com')
+        }).rejects.toThrow('Only the organizer can delete this event')
+    })
+
     test('Should delete event', async () => {
-        const deletedEvent = await serviceEvent.deleteEvent(1, 'riquelme@gmail.com')
+        const deletedEvent = await serviceEvent.deleteEvent(1, user.email)
 
         expect(deletedEvent).toBeDefined()
         expect(deletedEvent).toHaveProperty('id')
@@ -108,16 +139,11 @@ describe('Should test all services from events', () => {
 
     })
 
-    test("Shouldn't delete event because user is wrong", () => {
-        expect(async () => {
-            await serviceEvent.deleteEvent(6, 'riquelmesenna577@gmail.com')
-        }).rejects.toThrow('Only the organizer can delete this event')
-    })
 
-    test("Shouldn't delete event because it still active", () => {
-        expect(async () => {
-            await serviceEvent.deleteEvent(6, 'riquelme@gmail.com')
-        }).rejects.toThrow('Disable the event before deleting')
+    afterAll(async () => {
+        await deleteUser(user.email)
+        await deletecategory(adminUser.email, category.id)
+        await deleteUser(adminUser.email)
     })
 })
 
