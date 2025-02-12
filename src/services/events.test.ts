@@ -10,16 +10,17 @@ describe('Should test all services from events', () => {
         date: new Date('2025-10-01'),
         location: 'New York/NY',
         maxCapacity: 500,
-        categoryId: 9,
+        categoryId: 3,
         active: true,
         id: 1,
-        organizerId: 8,
+        organizerId: 2,
         participants: 0,
-        revenue: 0
+        revenue: 0,
+        Image: 'Imagem ficticia'
     };
 
     test('Should test if create the event', async () => {
-        const newEvent = await serviceEvent.addEvent(data, 'riquelmestayler@gmail.com')
+        const newEvent = await serviceEvent.addEvent(data, 'riquelme@gmail.com')
 
         expect(newEvent.active).toBeTruthy();
         expect(newEvent.name).toBe('Rap game 2.0')
@@ -49,7 +50,7 @@ describe('Should test all services from events', () => {
 
         expect(event.active).toBeTruthy()
         expect(event).toHaveProperty('name')
-        expect(event.organizerId).toBe(8)
+        expect(event.organizerId).toBe(2)
     })
 
     test("Shouldn't find event because wrong id", () => {
@@ -59,7 +60,7 @@ describe('Should test all services from events', () => {
     })
 
     test('Should find event by local', async () => {
-        const events = await serviceEvent.getEventLocal('NEW YORK', 1)
+        const events = await serviceEvent.getEventLocal('new york', 1)
 
         expect(events.length).toBeGreaterThanOrEqual(1)
     })
@@ -83,7 +84,7 @@ describe('Should test all services from events', () => {
     })
 
     test('Should update event property name and active', async () => {
-        const updatedEvent = await serviceEvent.updateEvent({ active: false, name: 'Rap game atualizado' }, 1, 'riquelmestayler@gmail.com')
+        const updatedEvent = await serviceEvent.updateEvent({ active: false, name: 'Rap game atualizado' }, 1, 'riquelme@gmail.com')
 
         expect(updatedEvent.active).toBeFalsy()
         expect(updatedEvent.name).toBe('Rap game atualizado')
@@ -96,7 +97,7 @@ describe('Should test all services from events', () => {
     })
 
     test('Should delete event', async () => {
-        const deletedEvent = await serviceEvent.deleteEvent(1, 'riquelmestayler@gmail.com')
+        const deletedEvent = await serviceEvent.deleteEvent(1, 'riquelme@gmail.com')
 
         expect(deletedEvent).toBeDefined()
         expect(deletedEvent).toHaveProperty('id')
@@ -109,13 +110,13 @@ describe('Should test all services from events', () => {
 
     test("Shouldn't delete event because user is wrong", () => {
         expect(async () => {
-            await serviceEvent.deleteEvent(32, 'riquelmesenna577@gmail.com')
+            await serviceEvent.deleteEvent(6, 'riquelmesenna577@gmail.com')
         }).rejects.toThrow('Only the organizer can delete this event')
     })
 
     test("Shouldn't delete event because it still active", () => {
         expect(async () => {
-            await serviceEvent.deleteEvent(32, 'qgda30@gmail.com')
+            await serviceEvent.deleteEvent(6, 'riquelme@gmail.com')
         }).rejects.toThrow('Disable the event before deleting')
     })
 })

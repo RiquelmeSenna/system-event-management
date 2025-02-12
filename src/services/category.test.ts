@@ -6,7 +6,7 @@ describe('Should test all services from categories', () => {
     let categoryId: number
 
     test('Should create a new category', async () => {
-        const category = await serviceCategories.newcategory('riquelme@gmail.com', 'Rap')
+        const category = await serviceCategories.newcategory('riquelmeadmin@gmail.com', 'Rap')
 
         expect(category.name).toBe('Rap')
         categoryId = category.id
@@ -31,13 +31,13 @@ describe('Should test all services from categories', () => {
     })
 
     test('should update category by id', async () => {
-        const updatedCategory = await serviceCategories.updateCategory('riquelme@gmail.com', categoryId, 'New Rap')
+        const updatedCategory = await serviceCategories.updateCategory('riquelmeadmin@gmail.com', categoryId, 'New Rap')
 
         expect(updatedCategory.name).toBe('New Rap')
     })
 
     test('Should delete category by id', async () => {
-        const deletedCategory = await serviceCategories.deletecategory('riquelme@gmail.com', categoryId)
+        const deletedCategory = await serviceCategories.deletecategory('riquelmeadmin@gmail.com', categoryId)
 
         expect(deletedCategory).toBeDefined()
         expect(deletedCategory).toHaveProperty('id')
@@ -63,25 +63,25 @@ describe('Should test all services from categories', () => {
 
     test("Shouldn't update category because user is not admin", () => {
         expect(async () => {
-            await serviceCategories.updateCategory('riquelmesenna577@gmail.com', 9, 'Teatro')
+            await serviceCategories.updateCategory('riquelmesenna577@gmail.com', 3, 'Teatro')
         }).rejects.toThrow('User cannot update Category')
     })
 
     test("Shouldn't update category because it not exist", () => {
         expect(async () => {
-            await serviceCategories.updateCategory('riquelme@gmail.com', 1, 'Rap')
+            await serviceCategories.updateCategory('riquelmeadmin@gmail.com', 1, 'Rap')
         }).rejects.toThrow('Not found category')
     })
 
     test("Shouldn't delete category because user is not admin", () => {
         expect(async () => {
-            await serviceCategories.deletecategory('riquelmesenna577@gmail.com', 9)
+            await serviceCategories.deletecategory('riquelmesenna577@gmail.com', 3)
         }).rejects.toThrow('User cannot delete Category')
     })
 
     test("Shouldn't delete category because it not exist", () => {
         expect(async () => {
-            await serviceCategories.deletecategory('riquelme@gmail.com', 1)
+            await serviceCategories.deletecategory('riquelmeadmin@gmail.com', 1)
         }).rejects.toThrow('Not found category')
     })
 
