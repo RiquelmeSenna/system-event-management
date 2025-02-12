@@ -48,6 +48,7 @@ model Category {
 model Ticket {
   id            Int        @id @default(autoincrement())
   type          TicketType
+  name          String
   price         Int
   totalQuantity Int
   available     Int

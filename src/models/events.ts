@@ -123,3 +123,16 @@ export const deleteEvent = async (id: number) => {
 
     return deletedEvent
 }
+
+export const getTicketsFromEvent = async (id: number) => {
+    const event = await prisma.event.findFirst({
+        where: { id },
+        select: {
+            tickets: {
+                select: { name: true, price: true }
+            }
+        }
+    })
+
+    return event
+}
