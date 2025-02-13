@@ -44,6 +44,18 @@ export const getEventByName = async (name: string, skip: number) => {
     return events
 }
 
+export const getTicketFromEvent = async (id: number) => {
+    const event = await modelEvent.getEvent(id)
+
+    if (!event) {
+        throw new Error('Event not exist')
+    }
+
+    const ticket = await modelEvent.getTicketsFromEvent(id)
+
+    return ticket
+}
+
 export const handleRawPhoto = async (tmpPath: string) => {
     const newNameFile = v4() + '.jpg'
 

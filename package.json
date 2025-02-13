@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node --import=tsx --watch --env-file=.env ./src/server.ts",
-    "test": "jest"
+    "dev": "set NODE_ENV=development && node --import=tsx --watch --env-file=.env ./src/server.ts",
+    "test": "set NODE_ENV=test && jest ",
+    "migrate:test": "set NODE_ENV=test && prisma migrate deploy"
   },
   "keywords": [],
   "author": "",

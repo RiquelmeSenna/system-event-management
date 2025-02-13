@@ -101,6 +101,19 @@ export const getEventsByName = async (name: string, skip: number) => {
     return event
 }
 
+export const getTicketsFromEvent = async (id: number) => {
+    const event = await prisma.event.findFirst({
+        where: { id },
+        select: {
+            tickets: {
+                select: { name: true, price: true }
+            }
+        }
+    })
+
+    return event
+}
+
 export const addEvent = async (data: CreateEvent, organizerId: number) => {
     const newEvent = await prisma.event.create({
         data: {
@@ -122,17 +135,4 @@ export const deleteEvent = async (id: number) => {
     const deletedEvent = await prisma.event.delete({ where: { id } })
 
     return deletedEvent
-}
-
-export const getTicketsFromEvent = async (id: number) => {
-    const event = await prisma.event.findFirst({
-        where: { id },
-        select: {
-            tickets: {
-                select: { name: true, price: true }
-            }
-        }
-    })
-
-    return event
 }

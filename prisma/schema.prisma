@@ -26,13 +26,13 @@ model Event {
   description      String
   location         String
   date             DateTime
-  Image            String
   maxCapacity      Int
   organizerId      Int
   categoryId       Int
   participants     Int                @default(0)
   revenue          Int                @default(0)
   active           Boolean            @default(true)
+  Image            String
   category         Category           @relation(fields: [categoryId], references: [id])
   organizer        User               @relation(fields: [organizerId], references: [id])
   ParticipantEvent ParticipantEvent[]
@@ -48,11 +48,11 @@ model Category {
 model Ticket {
   id            Int        @id @default(autoincrement())
   type          TicketType
-  name          String
   price         Int
   totalQuantity Int
   available     Int
   eventId       Int
+  name          String
   event         Event      @relation(fields: [eventId], references: [id])
 }
 

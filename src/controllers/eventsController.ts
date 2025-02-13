@@ -73,6 +73,22 @@ export const searchEvents: RequestHandler = async (req, res) => {
     }
 }
 
+export const getTicketsFromEvent: RequestHandler = async (req, res) => {
+    const safeData = eventValidation.getOneEventSchema.safeParse(req.params)
+
+    if (!safeData.success) {
+        return res.status(400).json({ error: safeData.error.flatten().fieldErrors })
+    }
+
+    try {
+        const ticket = await eventService.getTicketFromEvent(parseInt(safeData.data.id))
+
+        res.json({ ticket })
+    } catch (error) {
+        res.status(400).json({ error: 'Não foi possivel acessar os tickets desse evento' })
+    }
+}
+
 export const createEvent = async (req: ExtendRequest, res: Response) => {
     const safeData = eventValidation.eventCreateSchema.safeParse(req.body)
     if (!safeData.success) {
