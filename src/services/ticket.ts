@@ -15,14 +15,14 @@ export const createTicket = async (data: newTicket, email: string) => {
         throw new Error('Event not exist')
     }
 
-    if (data.available > data.totalQuantity) {
+    if (data.totalQuantity < data.available) {
         throw new Error('Cannot possible available be greater than total')
     }
 
-    const ticket = await modelTicket.createTicket(data)
+    let ticket = await modelTicket.createTicket(data)
 
     if (ticket.type == 'FREE') {
-        await modelTicket.updateTicket(ticket.id, { price: 0 })
+        ticket = await modelTicket.updateTicket(ticket.id, { price: 0 })
     }
 
     return ticket
@@ -46,14 +46,14 @@ export const updateTicket = async (data: updatedTicket, id: number, email: strin
         throw new Error('Event not exist')
     }
 
-    const updatedTicket = await modelTicket.updateTicket(ticket.id, data)
+    let updatedTicket = await modelTicket.updateTicket(ticket.id, data)
 
     if (typeof data.totalQuantity === 'number' && data.available as number > data.totalQuantity) {
         throw new Error('Cannot possible available be greater than total')
     }
 
     if (updatedTicket.type == 'FREE') {
-        await modelTicket.updateTicket(ticket.id, { price: 0 })
+        updatedTicket = await modelTicket.updateTicket(ticket.id, { price: 0 })
     }
 
     return updatedTicket
