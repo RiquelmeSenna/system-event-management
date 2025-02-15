@@ -10,6 +10,7 @@ export const register = async (data: User) => {
                 password: data.password,
                 document: data.document as string,
                 role: data.role,
+                stripeCustomerId: data.stripeCustomerId
             }
         })
         return newUser;

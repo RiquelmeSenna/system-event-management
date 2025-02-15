@@ -2,6 +2,7 @@ import { Response } from 'express'
 import { ExtendRequest } from '../types/extented-request'
 import * as ticketSchema from '../validations/ticket'
 import * as ticketService from '../services/ticket'
+import { createStripePayment } from '../utils/stripe'
 
 
 export const createTicket = async (req: ExtendRequest, res: Response) => {
@@ -12,13 +13,16 @@ export const createTicket = async (req: ExtendRequest, res: Response) => {
     }
 
     try {
+        const stripePayment = await createStripePayment(safeData.data.name, safeData.data.price)
+
         const newTicket = await ticketService.createTicket({
             available: safeData.data.available,
             eventId: safeData.data.eventId,
             name: safeData.data.name,
             price: safeData.data.price,
             totalQuantity: safeData.data.totalQuantity,
-            type: safeData.data.type
+            type: safeData.data.type,
+            stripeProductId: stripePayment.id
         }, req.userEmail)
 
         res.status(201).json({ newTicket })

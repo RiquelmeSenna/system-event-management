@@ -23,8 +23,7 @@ export const addCart = async (req: ExtendRequest, res: Response) => {
 export const checkout = async (req: ExtendRequest, res: Response) => {
     try {
         const checkout = await serviceCart.checkoutCart(req.userEmail)
-
-        res.status(201).json({ checkout })
+        res.status(200).json({ checkout })
     } catch (error) {
         console.log(error)
         res.status(400).json({ error: 'Não foi possivel realizar o checkout' })

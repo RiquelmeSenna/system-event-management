@@ -13,5 +13,12 @@ export const checkoutCart = async (id: number, ticketId: number) => {
         where: { id, ticketId }, data: { ticketId: null }
     })
 
-    return checkout
+    const ticketBuy = await prisma.ticket.update({
+        where: { id: ticketId },
+        data: {
+            available: -1
+        }
+    })
+
+    return { checkout, ticketBuy }
 }

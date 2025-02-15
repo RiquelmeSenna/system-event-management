@@ -6,6 +6,7 @@ export type User = {
     email: string,
     role?: Role
     document: string,
+    stripeCustomerId: string
 }
 
 export type UserUpdate = {

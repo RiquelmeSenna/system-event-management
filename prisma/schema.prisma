@@ -51,15 +51,16 @@ model Category {
 }
 
 model Ticket {
-  id            Int        @id @default(autoincrement())
-  type          TicketType
-  price         Int
-  totalQuantity Int
-  available     Int
-  eventId       Int
-  name          String
-  event         Event      @relation(fields: [eventId], references: [id])
-  User          User[]
+  id              Int        @id @default(autoincrement())
+  type            TicketType
+  price           Int
+  totalQuantity   Int
+  available       Int
+  eventId         Int
+  name            String
+  stripeProductId String
+  event           Event      @relation(fields: [eventId], references: [id])
+  User            User[]
 }
 
 model ParticipantEvent {

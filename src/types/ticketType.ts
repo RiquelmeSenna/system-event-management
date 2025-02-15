@@ -4,7 +4,8 @@ export type newTicket = {
     name: string
     totalQuantity: number,
     available: number,
-    eventId: number
+    eventId: number,
+    stripeProductId: string
 }
 
 export type updatedTicket = {

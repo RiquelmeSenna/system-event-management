@@ -3,6 +3,7 @@ import * as authSchema from '../validations/auth'
 import * as authService from '../services/auth'
 import { ExtendRequest } from "../types/extented-request";
 import { getUserByEmail } from "../models/user";
+import { createStripeCustomer } from "../utils/stripe";
 
 export const signUp: RequestHandler = async (req, res) => {
     const safeData = authSchema.registerSchema.safeParse(req.body)
@@ -11,12 +12,14 @@ export const signUp: RequestHandler = async (req, res) => {
     }
 
     try {
+        const customer = await createStripeCustomer({ email: safeData.data.email, name: safeData.data.name })
         const newUser = await authService.register({
             name: safeData.data.name,
             email: safeData.data.email,
             document: safeData.data.document,
             password: safeData.data.password,
             role: safeData.data.role,
+            stripeCustomerId: customer.id
         })
 
         res.status(201).json({
