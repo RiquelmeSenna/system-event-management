@@ -13,7 +13,7 @@ export const register = async (data: User) => {
     const passwordHash = await bcrypt.hash(data.password, 10);
     const token = await jwtSing(data.email);
 
-    const newUser = await userModel.register({ ...data, password: passwordHash, });
+    const newUser = await userModel.register({ ...data, password: passwordHash });
 
     if (newUser == false) {
         throw new Error('Cannot possible create user')

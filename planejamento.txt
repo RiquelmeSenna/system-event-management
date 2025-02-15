@@ -68,10 +68,8 @@ Banco de dados :
    DELETE : /user/me = deletar o usuario
    GET : /user/me/tickets : vê os ingressos em geral do usuario, separando por ativo e encerrado
 
-   POST : /cart = Adicionar itens ao carrinho
-   GET : /cart = listar os itens no carrinho
+   POST : /cart = Adiciono o ingresso pra compra
    POST : /cart/checkout = finalizar a compra
-   POST : /event/:id/tickets = local para efetuar a compra ao efetuar vai para o ingresso do usuario
 
    GET: /organizador/me/reports : Relatorios de seus eventos criado
    

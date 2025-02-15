@@ -9,7 +9,7 @@ export const register = async (data: User) => {
                 email: data.email,
                 password: data.password,
                 document: data.document as string,
-                role: data.role
+                role: data.role,
             }
         })
         return newUser;

@@ -6,6 +6,7 @@ import { AuthRouter } from './routers/authRouter';
 import { CategoryRouter } from './routers/categoriesRouter';
 import { UserRouter } from './routers/userRouter';
 import { TicketRouter } from './routers/ticketRouter';
+import { cartRouter } from './routers/cartRouter';
 
 const server = express();
 
@@ -23,6 +24,7 @@ server.use('/', AuthRouter)
 server.use('/categories', CategoryRouter)
 server.use('/user', UserRouter)
 server.use('/ticket', TicketRouter)
+server.use('/cart', cartRouter)
 
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`);

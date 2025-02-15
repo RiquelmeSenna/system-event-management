@@ -8,16 +8,21 @@ datasource db {
 }
 
 model User {
-  id               Int                @id @default(autoincrement())
-  email            String             @unique
-  name             String
-  password         String
-  document         String             @unique
-  role             Role               @default(PARTICIPANT)
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
-  Event            Event[]
-  ParticipantEvent ParticipantEvent[]
+  id                       Int                @id @default(autoincrement())
+  email                    String             @unique
+  name                     String
+  password                 String
+  document                 String             @unique
+  role                     Role               @default(PARTICIPANT)
+  createdAt                DateTime           @default(now())
+  updatedAt                DateTime           @updatedAt
+  ticketId                 Int?
+  stripeCustomerId         String?
+  stripeSubscriptionId     String?
+  stripeSubscriptionStatus String?
+  Event                    Event[]
+  ParticipantEvent         ParticipantEvent[]
+  ticket                   Ticket?            @relation(fields: [ticketId], references: [id])
 }
 
 model Event {
@@ -54,6 +59,7 @@ model Ticket {
   eventId       Int
   name          String
   event         Event      @relation(fields: [eventId], references: [id])
+  User          User[]
 }
 
 model ParticipantEvent {
