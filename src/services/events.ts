@@ -4,6 +4,7 @@ import { getUserByEmail } from '../models/user'
 import { CreateEvent, UpdateEvent } from '../types/eventType'
 import sharp from 'sharp'
 import fs from 'fs/promises'
+import e from 'express'
 
 export const getEvents = async (skip: number) => {
     const events = await modelEvent.getEvents(skip)
@@ -54,6 +55,22 @@ export const getTicketFromEvent = async (id: number) => {
     const ticket = await modelEvent.getTicketsFromEvent(id)
 
     return ticket
+}
+
+export const getEventOrganizer = async (id: number, email: string) => {
+    const user = await getUserByEmail(email)
+
+    if (!user) {
+        throw new Error('User not exist')
+    }
+
+    const event = await modelEvent.getEventOrganizer(id, user?.id as number)
+
+    if (!event) {
+        throw new Error('Event not exist')
+    }
+
+    return event
 }
 
 export const handleRawPhoto = async (tmpPath: string) => {

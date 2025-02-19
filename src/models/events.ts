@@ -75,6 +75,21 @@ export const getEventLocal = async (local: string, skip: number) => {
     return events
 }
 
+export const getEventOrganizer = async (id: number, organizerId: number) => {
+    const event = await prisma.event.findFirst({
+        where: {
+            id,
+            AND: { organizerId }
+        }
+    })
+
+    if (event && event.Image) {
+        event.Image = `${process.env.BASE_URL}/public/images/${event.Image}`
+    }
+
+    return event
+}
+
 export const getEventsByName = async (name: string, skip: number) => {
     const event = await prisma.event.findMany({
         where: {

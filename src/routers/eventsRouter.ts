@@ -10,6 +10,7 @@ EventRouter.get('/:id', eventsController.getEvent);
 EventRouter.get('/location/:local', eventsController.getEventsByLocation);
 EventRouter.get('/search/:name', eventsController.searchEvents);
 EventRouter.get('/ticket/:id', eventsController.getTicketsFromEvent)
+EventRouter.get('/organizer/:id', authMiddleware, eventsController.getEventOrganizer);
 EventRouter.post('/', authMiddleware, upload.single('photo'), eventsController.createEvent);
 EventRouter.put('/:id', authMiddleware, eventsController.updateEvent);
 EventRouter.delete('/:id', authMiddleware, eventsController.deleteEvent);

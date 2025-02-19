@@ -28,22 +28,20 @@ export const deleteUser = async (id: number) => {
 }
 
 export const getEventsBuyFromUser = async (id: number, skip: number) => {
-    const eventsUser = await prisma.user.findFirst({
-        where: { id },
+    const eventsUser = await prisma.participantEvent.findMany({
+        where: { participantId: id },
         select: {
-            Event: {
+            event: {
                 select: {
-                    Image: true,
                     name: true,
-                    active: true,
                     date: true,
                     location: true,
+                    active: true
                 }
             }
         },
         skip: skip ? (skip - 1) * 8 : 0,
-        take: 8
+        take: 8,
     })
-
     return eventsUser
 }

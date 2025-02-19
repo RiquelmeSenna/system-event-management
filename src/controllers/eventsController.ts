@@ -89,6 +89,23 @@ export const getTicketsFromEvent: RequestHandler = async (req, res) => {
     }
 }
 
+export const getEventOrganizer = async (req: ExtendRequest, res: Response) => {
+    const safeData = eventValidation.getOneEventSchema.safeParse(req.params)
+
+    if (!safeData.success) {
+        return res.status(400).json({ error: safeData.error.flatten().fieldErrors })
+    }
+
+    try {
+        const event = await eventService.getEventOrganizer(parseInt(safeData.data.id), req.userEmail)
+
+        res.json({ event })
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({ error: 'Não foi possivel acessar o evento' })
+    }
+}
+
 export const createEvent = async (req: ExtendRequest, res: Response) => {
     const safeData = eventValidation.eventCreateSchema.safeParse(req.body)
     if (!safeData.success) {
