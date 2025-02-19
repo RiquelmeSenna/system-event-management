@@ -7,9 +7,10 @@ import { CategoryRouter } from './routers/categoriesRouter';
 import { UserRouter } from './routers/userRouter';
 import { TicketRouter } from './routers/ticketRouter';
 import { cartRouter } from './routers/cartRouter';
+import { webhookRouter } from './routers/webHookRouter';
 
 const server = express();
-
+server.use('/webhook', webhookRouter);
 server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
 server.use(express.static('public'));

@@ -16,9 +16,31 @@ export const checkoutCart = async (id: number, ticketId: number) => {
     const ticketBuy = await prisma.ticket.update({
         where: { id: ticketId },
         data: {
-            available: -1
+            available: {
+                decrement: 1
+            }
         }
     })
 
-    return { checkout, ticketBuy }
+    const participantEvent = await prisma.participantEvent.create({
+        data: {
+            eventId: ticketBuy.eventId,
+            participantId: id,
+            ticketType: ticketBuy.type,
+        }
+    })
+
+    const updateEvent = await prisma.event.update({
+        where: { id: ticketBuy.eventId },
+        data: {
+            revenue: {
+                increment: ticketBuy.price
+            },
+            participants: {
+                increment: 1
+            }
+        }
+    })
+
+    return { checkout, ticketBuy, participantEvent, updateEvent }
 }

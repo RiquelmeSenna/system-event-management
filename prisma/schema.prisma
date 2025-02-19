@@ -68,7 +68,6 @@ model ParticipantEvent {
   eventId       Int
   participantId Int
   ticketType    String
-  paymentStatus Boolean
   createdAt     DateTime @default(now())
   event         Event    @relation(fields: [eventId], references: [id])
   participant   User     @relation(fields: [participantId], references: [id])

@@ -1,5 +1,7 @@
 import Stripe from "stripe";
 import { getTicket } from "../models/ticket";
+import { prisma } from "../database/prismaConnection";
+import { checkoutCart } from "../models/cart";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
     httpClient: Stripe.createFetchHttpClient(),
@@ -71,4 +73,40 @@ export const generateCheckout = async (userId: string, email: string, ticketId: 
     } catch (error) {
         console.log('errr', error)
     }
+}
+
+type CheckoutCompletedEvent = {
+    data: {
+        object: Stripe.Checkout.Session
+    }
+}
+
+export const handleCheckoutCompleted = async (event: CheckoutCompletedEvent) => {
+    const idUser = event.data.object.client_reference_id;
+    const stripeCustomerId = event.data.object.customer;
+    const checkoutStatus = event.data.object.status;
+
+    if (checkoutStatus !== 'complete') {
+        console.log('Checkout not completed')
+        return;
+    }
+
+    if (!idUser || !stripeCustomerId) {
+        console.log('IdUser, stripeCustomerId is required')
+        throw new Error('IdUser, stripeCustomerId is required')
+    }
+
+    const userExist = await prisma.user.findFirst({ where: { id: parseInt(idUser) } })
+
+    if (!userExist) throw new Error('User not found')
+
+    await prisma.user.update({
+        where: { id: userExist.id },
+        data: {
+            stripeCustomerId: stripeCustomerId as string,
+        }
+    })
+    console.log('1 teste certo')
+
+    await checkoutCart(userExist.id, userExist.ticketId as number)
 }

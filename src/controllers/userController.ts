@@ -2,6 +2,7 @@ import { Response } from "express";
 import { ExtendRequest } from "../types/extented-request";
 import * as serviceUser from '../services/user'
 import * as schemaUser from '../validations/user'
+import { createStripeCustomer } from "../utils/stripe";
 
 export const getUser = async (req: ExtendRequest, res: Response) => {
     try {
@@ -25,6 +26,7 @@ export const updateUser = async (req: ExtendRequest, res: Response) => {
     }
 
     try {
+        const stripe = await createStripeCustomer(({ email: safeData.data.email as string, name: safeData.data.name }))
         const updatedUser = await serviceUser.updateUser(req.userEmail, {
             name: safeData.data.name,
             newEmail: safeData.data.email,
