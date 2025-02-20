@@ -5,7 +5,7 @@ import { checkoutCart } from "../models/cart";
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
     httpClient: Stripe.createFetchHttpClient(),
-});
+}); // Create a new instance of Stripe with the secret key
 
 export const getStripeCustomerByEmail = async (email: string) => {
     const custormers = await stripe.customers.list({ email });
@@ -51,15 +51,15 @@ export const generateCheckout = async (userId: string, email: string, ticketId: 
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             mode: 'payment',
-            client_reference_id: userId,
-            customer: customer.id,
+            client_reference_id: userId, // User Id database
+            customer: customer.id, // Customer Id Stripe
             success_url: 'http://localhost:3000/done',
             cancel_url: 'http://localhost:3000/error',
             line_items: [
                 {
                     price_data: {
                         currency: 'brl',
-                        product: ticket.stripeProductId,
+                        product: ticket.stripeProductId, // Product Id Stripe
                         unit_amount: ticket.price * 100
                     },
                     quantity: 1
@@ -73,13 +73,13 @@ export const generateCheckout = async (userId: string, email: string, ticketId: 
     } catch (error) {
         console.log('errr', error)
     }
-}
+} // Generate a checkout session
 
 type CheckoutCompletedEvent = {
     data: {
         object: Stripe.Checkout.Session
     }
-}
+} // Type of Checkout Session Event
 
 export const handleCheckoutCompleted = async (event: CheckoutCompletedEvent) => {
     const idUser = event.data.object.client_reference_id;
@@ -108,5 +108,5 @@ export const handleCheckoutCompleted = async (event: CheckoutCompletedEvent) => 
     })
     console.log('1 teste certo')
 
-    await checkoutCart(userExist.id, userExist.ticketId as number)
+    await checkoutCart(userExist.id, userExist.ticketId as number) // Update the user's cart
 }
