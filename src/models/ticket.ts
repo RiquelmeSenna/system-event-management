@@ -13,6 +13,16 @@ export const getTicket = async (id: number) => {
     return ticket
 }
 
+export const deleteTickesFromEvent = async (eventId: number) => {
+    const ticket = prisma.ticket.deleteMany({
+        where: {
+            eventId
+        }
+    })
+
+    return ticket
+}
+
 export const updateTicket = async (id: number, data: updatedTicket) => {
     const ticket = prisma.ticket.update({ where: { id }, data })
 

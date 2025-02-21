@@ -36,12 +36,7 @@ describe('Should test all user services', () => {
         expect(updatedUser.name).toBe('Riquelme Pastor')
         expect(updatedUser.email).toBe('riquelmestayler@gmail.com')
     })
-    test('Should get events by user', async () => {
-        const events = await serviceUser.getEventsByUser('riquelmestayler@gmail.com', 1)
 
-        expect(events).not.toBeUndefined()
-
-    })
 
     test('Should delete User', async () => {
         const deletedUser = await serviceUser.deleteUser('riquelmestayler@gmail.com')

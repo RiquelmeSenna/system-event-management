@@ -90,6 +90,27 @@ export const getEventOrganizer = async (id: number, organizerId: number) => {
     return event
 }
 
+export const getEventsByOrganizer = async (organizerId: number, skip: number) => {
+    const events = await prisma.event.findMany({
+        where: {
+            organizerId
+        },
+        select: {
+            name: true,
+            active: true,
+            category: {
+                select: { name: true }
+            },
+            location: true,
+            date: true,
+        },
+        skip: skip ? (skip - 1) * 8 : 0,
+        take: 8
+    })
+
+    return events
+}
+
 export const getEventsByName = async (name: string, skip: number) => {
     const event = await prisma.event.findMany({
         where: {
@@ -117,7 +138,7 @@ export const getEventsByName = async (name: string, skip: number) => {
 }
 
 export const getTicketsFromEvent = async (id: number) => {
-    const event = await prisma.event.findFirst({
+    const event = await prisma.event.findMany({
         where: { id },
         select: {
             tickets: {

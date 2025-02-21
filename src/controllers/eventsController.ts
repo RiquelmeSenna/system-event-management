@@ -106,6 +106,18 @@ export const getEventOrganizer = async (req: ExtendRequest, res: Response) => {
     }
 }
 
+export const getEventsByOrganizer = async (req: ExtendRequest, res: Response) => {
+    const { skip } = req.query
+
+    try {
+        const events = await eventService.getEventsByOrganizer(req.userEmail, parseInt(skip as string))
+
+        res.json({ events })
+    } catch (error) {
+        res.status(400).json({ error: 'Não foi possivel acessar os eventos' })
+    }
+}
+
 export const createEvent = async (req: ExtendRequest, res: Response) => {
     const safeData = eventValidation.eventCreateSchema.safeParse(req.body)
     if (!safeData.success) {

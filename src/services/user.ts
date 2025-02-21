@@ -12,6 +12,22 @@ export const getUserByEmail = async (email: string) => {
     return user
 }
 
+export const getEventsByUser = async (email: string, skip: number) => {
+    const user = await getUserByEmail(email)
+
+    if (!user) {
+        throw new Error('User not exist')
+    }
+
+    const events = await modelUser.getEventsBuyFromUser(user.id, skip)
+
+    if (events.length < 1) {
+        throw new Error('User not bought no one ticket')
+    }
+
+    return events
+}
+
 export const updateUser = async (email: string, { name, newEmail, password }: UserUpdate) => {
     const user = await modelUser.getUserByEmail(email)
 
@@ -49,18 +65,3 @@ export const deleteUser = async (email: string) => {
     return deletedUser
 }
 
-export const getEventsByUser = async (email: string, skip: number) => {
-    const user = await getUserByEmail(email)
-
-    if (!user) {
-        throw new Error('User not exist')
-    }
-
-    const events = await modelUser.getEventsBuyFromUser(user.id, skip)
-
-    if (!events) {
-        throw new Error('error when picking up events')
-    }
-
-    return events
-}

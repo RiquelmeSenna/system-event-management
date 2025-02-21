@@ -1,9 +1,9 @@
 import { afterAll, beforeAll, describe, expect, test } from "@jest/globals"
 import * as serviceCategories from "./categories"
 import { deleteUser } from "./user"
-import { createStripeCustomer } from "../utils/stripe"
-import { User } from "../types/authType"
+import * as utilsObject from '../utils/objectsTest'
 import { register } from "./auth"
+import { User } from "../types/authType"
 
 describe('Should test all services from categories', () => {
     let categoryId: number
@@ -11,15 +11,8 @@ describe('Should test all services from categories', () => {
     let adminUser: User
 
     beforeAll(async () => {
-        const customer = await createStripeCustomer({ email: 'riquelmeadmin@gmail.com', name: 'Riquelme Admin' })
-        adminUser = {
-            document: '06955734113',
-            email: 'riquelmeadmin@gmail.com',
-            name: 'Riquelme Admin',
-            password: '123456789!',
-            role: 'ADMIN',
-            stripeCustomerId: customer.id
-        }
+        adminUser = await utilsObject.createAdminUser()
+
         await register(adminUser)
     })
 

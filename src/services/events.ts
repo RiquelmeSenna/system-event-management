@@ -4,7 +4,7 @@ import { getUserByEmail } from '../models/user'
 import { CreateEvent, UpdateEvent } from '../types/eventType'
 import sharp from 'sharp'
 import fs from 'fs/promises'
-import e from 'express'
+import { deleteTickesFromEvent } from '../models/ticket'
 
 export const getEvents = async (skip: number) => {
     const events = await modelEvent.getEvents(skip)
@@ -71,6 +71,22 @@ export const getEventOrganizer = async (id: number, email: string) => {
     }
 
     return event
+}
+
+export const getEventsByOrganizer = async (email: string, skip: number) => {
+    const user = await getUserByEmail(email)
+
+    if (!user) {
+        throw new Error('User not exist')
+    }
+
+    const events = await modelEvent.getEventsByOrganizer(user.id, skip)
+
+    if (events.length < 1) {
+        throw new Error('There is no event for this organizer')
+    }
+
+    return events
 }
 
 export const handleRawPhoto = async (tmpPath: string) => {
@@ -142,6 +158,8 @@ export const deleteEvent = async (id: number, email: string) => {
     if (event.active === true) {
         throw new Error('Disable the event before deleting')
     }
+
+    await deleteTickesFromEvent(id)
 
     const deletedEvent = await modelEvent.deleteEvent(id)
 
