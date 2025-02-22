@@ -1,7 +1,6 @@
 import { beforeAll, describe, expect, test } from "@jest/globals"
 import * as serviceUser from "./user"
 import { register } from "./auth"
-import { createStripeCustomer } from "../utils/stripe"
 import { User } from "../types/authType"
 import { createUsertest } from "../utils/objectsTest"
 

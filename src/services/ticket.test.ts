@@ -6,7 +6,6 @@ import { register } from "../models/auth";
 import * as serviceTicket from './ticket'
 import { prisma } from "../database/prismaConnection";
 import { addEvent, deleteEvent, getEvent, updateEvent } from "./events";
-import { deletecategory } from "./categories";
 import { deleteUser } from "./user";
 
 
