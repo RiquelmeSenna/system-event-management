@@ -2,7 +2,7 @@ import { expect, test, describe, beforeAll, afterAll } from '@jest/globals'
 import { login, register } from './auth'
 import { User } from '../types/authType'
 import { prisma } from '../database/prismaConnection'
-import { createStripeCustomer } from '../utils/stripe'
+import { createUsertest } from '../utils/objectsTest'
 
 
 
@@ -11,14 +11,8 @@ describe('Should test auth in service', () => {
     let user: User
 
     test('should register user in database', async () => {
-        const customer = await createStripeCustomer({ email: 'teste@gmail.com', name: 'Testador' })
-        user = {
-            email: 'teste@gmail.com',
-            name: 'Testador',
-            password: 'senha123',
-            document: '06955734112',
-            stripeCustomerId: customer.id
-        }
+        user = await createUsertest()
+
         const newUser = await register(user)
 
         expect(newUser.name).toBe('Testador')

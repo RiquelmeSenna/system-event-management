@@ -6,62 +6,23 @@ import { prisma } from "../database/prismaConnection";
 import * as serviceEvent from "./events";
 import { deleteUser } from "./user";
 import { deletecategory } from "./categories";
-import { createStripeCustomer } from "../utils/stripe";
+import * as utilObject from "../utils/objectsTest";
 import { createTicket } from "./ticket";
 
 
 describe('Should test all services from events', () => {
     let user: User
-
-    const category: Category = {
-        id: 1,
-        name: 'Rap'
-    }
-
-    const data: Event = {
-        name: 'Rap game 2.0',
-        description: 'Rap game 2.0 a nova versão',
-        date: new Date('2025-10-01'),
-        location: 'New York/NY',
-        maxCapacity: 500,
-        categoryId: 1,
-        active: true,
-        id: 1,
-        organizerId: 1,
-        participants: 0,
-        revenue: 0,
-        Image: 'Imagem ficticia'
-    };
-
-    const newTicket: Ticket = {
-        id: 1,
-        eventId: data.id,
-        price: 50,
-        available: 100,
-        totalQuantity: 100,
-        name: 'Pista 1 Lote',
-        stripeProductId: 'prod_J1',
-        type: 'PAID'
-    }
-
+    let category: Category
+    let data: Event
+    let newTicket: Ticket
     let adminUser: User
 
     beforeAll(async () => {
-        const customer = await createStripeCustomer({ email: 'riquelmesenna577@gmail.com', name: 'Riquelme Senna' })
-        user = {
-            name: "Riquelme Senna",
-            document: '06955734113',
-            email: 'riquelmesenna577@gmail.com',
-            password: '123456789!',
-            role: 'ORGANIZER',
-            stripeCustomerId: customer.id
-        }
-
-        const customerAdmin = await createStripeCustomer({ email: 'riquelmeadmin@gmail.com', name: 'Riquelme Admin' })
-        adminUser = {
-            document: '06955734112', email: 'riquelmeadmin@gmail.com',
-            name: "Riquelme Admin", password: '123456789!', role: 'ADMIN', stripeCustomerId: customerAdmin.id
-        }
+        user = await utilObject.createUserOrganizer()
+        category = await utilObject.createCategory()
+        data = await utilObject.createEvent()
+        newTicket = await utilObject.createNewTicket()
+        adminUser = await utilObject.createAdminUser()
 
         await register(user)
         await register(adminUser)
